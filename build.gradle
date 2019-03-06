@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group 'skibinski.michal.revolut'
@@ -13,4 +14,11 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'org.takes', name: 'takes', version: '1.11.3'
+}
+
+mainClassName='skibinski.michal.revolut.Application'
+
+run {
+    args = ["--hit-refresh", "--port=8080"]
 }

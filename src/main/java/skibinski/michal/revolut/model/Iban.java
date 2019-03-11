@@ -1,4 +1,4 @@
-package skibinski.michal.revolut.account;
+package skibinski.michal.revolut.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

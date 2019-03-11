@@ -1,4 +1,4 @@
-package skibinski.michal.revolut.account;
+package skibinski.michal.revolut.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,9 +16,13 @@ public final class Transfer {
       @JsonProperty("source") Iban source,
       @JsonProperty("destination") Iban destination,
       @JsonProperty("amount") BigDecimal amount) {
+    BigDecimal _amount = amount.setScale(2, BigDecimal.ROUND_DOWN);
+    if(_amount.compareTo(new BigDecimal(0)) < 0) {
+      throw new IllegalArgumentException("Amount cannot be negative. Amount: " + _amount);
+    }
     this.source = source;
     this.destination = destination;
-    this.amount = amount;
+    this.amount = _amount;
   }
 
   public Iban getSource() {

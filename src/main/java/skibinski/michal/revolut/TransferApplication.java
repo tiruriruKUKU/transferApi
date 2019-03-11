@@ -1,4 +1,4 @@
-package skibinski.michal.revolut.http;
+package skibinski.michal.revolut;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,21 +17,21 @@ import org.takes.rs.RsJson;
 import org.takes.rs.RsText;
 import org.takes.rs.RsWithBody;
 import org.takes.rs.RsWithStatus;
-import skibinski.michal.revolut.account.Account;
-import skibinski.michal.revolut.account.Iban;
-import skibinski.michal.revolut.account.IbanFormatException;
-import skibinski.michal.revolut.account.Transfer;
+import skibinski.michal.revolut.model.Account;
+import skibinski.michal.revolut.model.Iban;
+import skibinski.michal.revolut.model.IbanFormatException;
+import skibinski.michal.revolut.model.Transfer;
 import skibinski.michal.revolut.dao.AccountNotFoundException;
 import skibinski.michal.revolut.dao.InsufficientFundsException;
 import skibinski.michal.revolut.dao.TransferDao;
 
-class HttpApplication {
+class TransferApplication {
 
   private final ObjectMapper objectMapper = new ObjectMapper();
   private final TransferDao dao;
   private final Take take;
 
-  HttpApplication(TransferDao dao) {
+  TransferApplication(TransferDao dao) {
     this.dao = dao;
     this.take = new TkFork(
         new FkMethods("GET",
@@ -65,9 +65,9 @@ class HttpApplication {
       return new RsJson(new RsWithBody(json));
 
     } catch (IbanFormatException e) {
-      return Error.INVALID_IBAN.getResposne();
+      return Error.INVALID_IBAN.getResponse();
     } catch (AccountNotFoundException e) {
-      return Error.ACCOUNT_NOT_FOUND.getResposne();
+      return Error.ACCOUNT_NOT_FOUND.getResponse();
     } catch (JsonProcessingException e) {
       return new RsWithStatus(500);
     }
@@ -86,9 +86,9 @@ class HttpApplication {
       dao.sendTransfer(transfer);
       return new RsWithStatus(200);
     } catch (InsufficientFundsException e) {
-      return Error.INSUFFICIENT_FUNDS.getResposne();
+      return Error.INSUFFICIENT_FUNDS.getResponse();
     } catch (AccountNotFoundException e) {
-      return Error.ACCOUNT_NOT_FOUND.getResposne();
+      return Error.ACCOUNT_NOT_FOUND.getResponse();
     } catch (JsonParseException | JsonMappingException e) {
       return new RsWithStatus(400);
     } catch (IOException e) {
@@ -101,14 +101,14 @@ class HttpApplication {
     ACCOUNT_NOT_FOUND("account_not_found", 404),
     INSUFFICIENT_FUNDS("insufficient_founds", 403);
 
-    private final Response resposne;
+    private final Response response;
 
     Error(String text, int code) {
-      this.resposne = new RsWithStatus(new RsText(text), code);
+      this.response = new RsWithStatus(new RsText(text), code);
     }
 
-    public Response getResposne() {
-      return resposne;
+    public Response getResponse() {
+      return response;
     }
   }
 }

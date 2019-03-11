@@ -1,4 +1,4 @@
-package skibinski.michal.revolut.http;
+package skibinski.michal.revolut;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -9,9 +9,9 @@ import org.junit.Test;
 import org.takes.Take;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
-import skibinski.michal.revolut.account.Account;
-import skibinski.michal.revolut.account.Iban;
-import skibinski.michal.revolut.account.Transfer;
+import skibinski.michal.revolut.model.Account;
+import skibinski.michal.revolut.model.Iban;
+import skibinski.michal.revolut.model.Transfer;
 import skibinski.michal.revolut.dao.AccountNotFoundException;
 import skibinski.michal.revolut.dao.InsufficientFundsException;
 import skibinski.michal.revolut.dao.TransferDao;
@@ -48,7 +48,7 @@ public class HttpApplicationTest {
       }
     }
   };
-  private final Take take = new HttpApplication(mockDao).getTake();
+  private final Take take = new TransferApplication(mockDao).getTake();
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Test

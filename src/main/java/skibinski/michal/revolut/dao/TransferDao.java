@@ -1,8 +1,8 @@
 package skibinski.michal.revolut.dao;
 
-import skibinski.michal.revolut.account.Account;
-import skibinski.michal.revolut.account.Iban;
-import skibinski.michal.revolut.account.Transfer;
+import skibinski.michal.revolut.model.Account;
+import skibinski.michal.revolut.model.Iban;
+import skibinski.michal.revolut.model.Transfer;
 
 public interface TransferDao {
 

@@ -1,4 +1,4 @@
-package skibinski.michal.revolut.account;
+package skibinski.michal.revolut.model;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;

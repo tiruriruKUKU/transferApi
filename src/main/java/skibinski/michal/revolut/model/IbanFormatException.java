@@ -1,4 +1,4 @@
-package skibinski.michal.revolut.account;
+package skibinski.michal.revolut.model;
 
 public class IbanFormatException extends IllegalArgumentException {
 

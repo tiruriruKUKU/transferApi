@@ -71,13 +71,12 @@ class TransferApplication {
       Account account = dao.getAccount(iban);
       String json = this.objectMapper.writeValueAsString(account);
       return new RsJson(new RsWithBody(json));
-
     } catch (IbanFormatException e) {
       return Error.INVALID_IBAN.getResponse();
     } catch (AccountNotFoundException e) {
       return Error.ACCOUNT_NOT_FOUND.getResponse();
     } catch (JsonProcessingException e) {
-      return new RsWithStatus(500);
+      return Error.INTERNAL_ERROR.getResponse();
     }
   }
 
@@ -92,16 +91,18 @@ class TransferApplication {
     } catch (AccountNotFoundException e) {
       return Error.ACCOUNT_NOT_FOUND.getResponse();
     } catch (JsonParseException | JsonMappingException e) {
-      return new RsWithStatus(400);
+      return Error.INCORRECT_JSON.getResponse();
     } catch (IOException e) {
-      return new RsWithStatus(500);
+      return Error.INTERNAL_ERROR.getResponse();
     }
   }
 
   private enum Error {
     INVALID_IBAN("invalid_iban", 400),
     ACCOUNT_NOT_FOUND("account_not_found", 404),
-    INSUFFICIENT_FUNDS("insufficient_founds", 403);
+    INSUFFICIENT_FUNDS("insufficient_founds", 403),
+    INCORRECT_JSON("incorrect_json", 400),
+    INTERNAL_ERROR("internal_server_error", 500);
 
     private final Response response;
 

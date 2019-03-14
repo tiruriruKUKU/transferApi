@@ -19,6 +19,7 @@ import org.takes.rs.RsWithStatus;
 import org.takes.tk.TkClasspath;
 import org.takes.tk.TkSlf4j;
 import org.takes.tk.TkWithType;
+import skibinski.michal.revolut.dao.SameSourceAndDestinationException;
 import skibinski.michal.revolut.model.Account;
 import skibinski.michal.revolut.model.Iban;
 import skibinski.michal.revolut.model.IbanFormatException;
@@ -94,6 +95,8 @@ class TransferApplication {
       return Error.INCORRECT_JSON.getResponse();
     } catch (IOException e) {
       return Error.INTERNAL_ERROR.getResponse();
+    } catch (SameSourceAndDestinationException e) {
+      return Error.SAME_SOURCE_AND_DESTINATION.getResponse();
     }
   }
 
@@ -102,7 +105,8 @@ class TransferApplication {
     ACCOUNT_NOT_FOUND("account_not_found", 404),
     INSUFFICIENT_FUNDS("insufficient_founds", 403),
     INCORRECT_JSON("incorrect_json", 400),
-    INTERNAL_ERROR("internal_server_error", 500);
+    INTERNAL_ERROR("internal_server_error", 500),
+    SAME_SOURCE_AND_DESTINATION("same_source_and_destination", 400);
 
     private final Response response;
 

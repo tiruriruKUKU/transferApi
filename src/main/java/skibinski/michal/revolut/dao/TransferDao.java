@@ -8,5 +8,5 @@ public interface TransferDao {
 
   Account getAccount(Iban iban) throws AccountNotFoundException;
 
-  void sendTransfer(Transfer transfer) throws AccountNotFoundException, InsufficientFundsException;
+  void sendTransfer(Transfer transfer) throws AccountNotFoundException, InsufficientFundsException, SameSourceAndDestinationException;
 }

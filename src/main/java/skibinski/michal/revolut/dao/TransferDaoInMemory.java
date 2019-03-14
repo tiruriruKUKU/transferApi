@@ -27,7 +27,7 @@ public class TransferDaoInMemory implements TransferDao {
 
   @Override
   public void sendTransfer(Transfer transfer)
-      throws AccountNotFoundException, InsufficientFundsException {
+      throws AccountNotFoundException, InsufficientFundsException, SameSourceAndDestinationException {
     StoredAccount src = accounts.get(transfer.getSource());
     StoredAccount dst = accounts.get(transfer.getDestination());
     if (src == null) {
@@ -35,6 +35,9 @@ public class TransferDaoInMemory implements TransferDao {
     }
     if (dst == null) {
       throw new AccountNotFoundException(transfer.getDestination());
+    }
+    if (src == dst) { //only one StoredAccount per iban. We can do reference comparision.
+      throw new SameSourceAndDestinationException();
     }
     if (!src.tryOutgoingTransfer(transfer)) {
       throw new InsufficientFundsException();

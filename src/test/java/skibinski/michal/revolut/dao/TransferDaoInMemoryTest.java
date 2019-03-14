@@ -61,7 +61,8 @@ public class TransferDaoInMemoryTest {
     }
 
     @Test
-    public void shouldTransferMoney() throws AccountNotFoundException, InsufficientFundsException {
+    public void shouldTransferMoney()
+        throws AccountNotFoundException, InsufficientFundsException, SameSourceAndDestinationException {
       TransferDao dao = createTestDao();
       dao.sendTransfer(new Transfer(srcIban, dstIban, transferAmount));
       assertThat(dao.getAccount(srcIban))

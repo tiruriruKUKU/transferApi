@@ -30,11 +30,6 @@ public final class Account {
     return balance;
   }
 
-  /**
-   * Returning balance as double (standard BigDecimal serialization) in json is not good idea.
-   * https://stackoverflow.com/questions/52149589/return-bigdecimal-fields-as-json-string-values-in-java
-   * @return balance as string.
-   */
   @JsonProperty("balance")
   public String getBalanceAsString() {
     return balance.toString();

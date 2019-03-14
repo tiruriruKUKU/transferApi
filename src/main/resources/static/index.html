@@ -1,0 +1,113 @@
+<html>
+<head>
+  <title>Transfer api demo1111</title>
+  <script>
+    function onAccountChange(e) {
+      e && e.preventDefault();
+      const select = document.getElementById("account-details-iban");
+      const value = select.options[select.selectedIndex].value;
+      fetch(`api/accounts/${value}`)
+      .then(response => response.json())
+      .then(displayAccountDetails);
+    }
+
+    function displayAccountDetails(details) {
+      let table = `<table>
+<tr>
+<th>source</th>
+<th>destination</th>
+<th>amount</th>
+</tr>`;
+      for (let i = 0; i < details.history.length; i++) {
+        const transfer = details.history[i];
+        table = table += `
+<tr>
+<td>${transfer.source}</td>
+<td>${transfer.destination}</td>
+<td>${transfer.amount}</td>
+</tr>`;
+      }
+      table += '</table>';
+      document.getElementById("account-details").innerHTML = `
+<b>iban: </b>${details.iban}</br>
+<b>balance: </b>${details.balance}</br>
+<b>history:</b></br>
+${table}`;
+    }
+
+    function onSendTransfer(e) {
+      e && e.preventDefault();
+      const srcSelect = document.getElementById("transfer-source-iban");
+      const srcValue = srcSelect.options[srcSelect.selectedIndex].value;
+      const dstSelect = document.getElementById("transfer-destination-iban");
+      const dstValue = dstSelect.options[dstSelect.selectedIndex].value;
+      const amount = document.getElementById("amount").value;
+      const body = JSON.stringify({
+        source: srcValue,
+        destination: dstValue,
+        amount: amount
+      });
+      fetch('api/transfer', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: body
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw response;
+        }
+        onAccountChange();
+      })
+      .catch(function(error) {
+        error.text().then( errorMessage => {
+          alert(`${error.statusText}\n${errorMessage}`);
+        })
+      });
+    }
+
+    window.onload = () => {
+      onAccountChange();
+    }
+  </script>
+</head>
+<body>
+<h1>Transfer</h1>
+<label for="transfer-source-iban">Source:</label>
+<select id="transfer-source-iban"
+        name="transfer-source-iban"
+>
+  <option value="AL35202111090000000001234567">AL35202111090000000001234567</option>
+  <option value="AD1400080001001234567890">AD1400080001001234567890</option>
+  <option value="BY86AKBB10100000002966000000">BY86AKBB10100000002966000000</option>
+  <option value="HR1723600001101234565">HR1723600001101234565</option>
+</select>
+<br/>
+<label for="transfer-destination-iban">Destination:</label>
+<select id="transfer-destination-iban"
+        name="transfer-destination-iban"
+>
+  <option value="AL35202111090000000001234567">AL35202111090000000001234567</option>
+  <option value="AD1400080001001234567890">AD1400080001001234567890</option>
+  <option value="BY86AKBB10100000002966000000">BY86AKBB10100000002966000000</option>
+  <option value="HR1723600001101234565">HR1723600001101234565</option>
+</select>
+<br/>
+<label for="amount">Amount:</label>
+<input type="number" name="amount" id="amount"><br>
+<button onClick="onSendTransfer(event)">Send transfer</button>
+<h1>Account details</h1>
+<label for="account-details-iban">Iban:</label>
+<select id="account-details-iban"
+        name="account-details-iban"
+        onChange="onAccountChange(event)"
+>
+  <option value="AL35202111090000000001234567">AL35202111090000000001234567</option>
+  <option value="AD1400080001001234567890">AD1400080001001234567890</option>
+  <option value="BY86AKBB10100000002966000000">BY86AKBB10100000002966000000</option>
+  <option value="HR1723600001101234565">HR1723600001101234565</option>
+</select>
+<div id="account-details"></div>
+</body>
+</html>

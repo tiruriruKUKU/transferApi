@@ -1,6 +1,7 @@
 package skibinski.michal.revolut.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -24,8 +25,19 @@ public final class Account {
     this.history = new ArrayList<>(history);
   }
 
+  @JsonIgnore
   public BigDecimal getBalance() {
     return balance;
+  }
+
+  /**
+   * Returning balance as double (standard BigDecimal serialization) in json is not good idea.
+   * https://stackoverflow.com/questions/52149589/return-bigdecimal-fields-as-json-string-values-in-java
+   * @return balance as string.
+   */
+  @JsonProperty("balance")
+  public String getBalanceAsString() {
+    return balance.toString();
   }
 
   public Iban getIban() {

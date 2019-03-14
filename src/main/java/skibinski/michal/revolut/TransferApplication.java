@@ -5,18 +5,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.facets.fork.FkMethods;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.RqRegex;
 import org.takes.facets.fork.TkFork;
+import org.takes.rq.RqPrint;
 import org.takes.rs.RsJson;
 import org.takes.rs.RsText;
 import org.takes.rs.RsWithBody;
 import org.takes.rs.RsWithStatus;
+import org.takes.tk.TkClasspath;
+import org.takes.tk.TkSlf4j;
+import org.takes.tk.TkWithType;
 import skibinski.michal.revolut.model.Account;
 import skibinski.michal.revolut.model.Iban;
 import skibinski.michal.revolut.model.IbanFormatException;
@@ -33,20 +35,26 @@ class TransferApplication {
 
   TransferApplication(TransferDao dao) {
     this.dao = dao;
-    this.take = new TkFork(
-        new FkMethods("GET",
-            new TkFork(
-                new FkRegex(
-                    "/api/accounts/(?<iban>[A-Z0-9]+)",
-                    this::processGetAccountRequest
+    this.take = new TkSlf4j(
+        new TkFork(
+            new FkMethods("GET",
+                new TkFork(
+                    new FkRegex(
+                        "/api/accounts/(?<iban>[A-Z0-9]+)",
+                        this::processGetAccountRequest
+                    ),
+                    new FkRegex(
+                        "/.+html",
+                        new TkWithType(new TkClasspath("/static"), "text/html")
+                    )
                 )
-            )
-        ),
-        new FkMethods("POST",
-            new TkFork(
-                new FkRegex(
-                    "/api/transfer",
-                    this::processPostTransferRequest
+            ),
+            new FkMethods("POST",
+                new TkFork(
+                    new FkRegex(
+                        "/api/transfer",
+                        this::processPostTransferRequest
+                    )
                 )
             )
         )
@@ -75,14 +83,8 @@ class TransferApplication {
 
   private Response processPostTransferRequest(RqRegex request) {
     try {
-      Transfer transfer = objectMapper
-          .readValue(
-              new InputStreamReader(
-                  request.body(),
-                  StandardCharsets.UTF_8
-              ),
-              Transfer.class
-          );
+      String body = new RqPrint(request).printBody();
+      Transfer transfer = objectMapper.readValue(body, Transfer.class);
       dao.sendTransfer(transfer);
       return new RsWithStatus(200);
     } catch (InsufficientFundsException e) {

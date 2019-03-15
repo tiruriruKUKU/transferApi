@@ -25,5 +25,5 @@ dependencies {
 mainClassName='skibinski.michal.revolut.Main'
 
 run {
-    args = ["--hit-refresh", "--port=8080"]
+    args = ["--port=8080"]
 }

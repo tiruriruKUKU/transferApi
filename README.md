@@ -18,7 +18,7 @@ Datastore is populated with four test accounts:
   
 ## API
 To avoid problems with floating point arithmetic, amount of money and account balance is always
-passed as a string. Precision is up to two numbers after a decimal point. Input with a higher
+passed as a string. Precision is up to two digits after a decimal point. Input with a higher
 precision will be rounded down.
 
 ### `/api/accounts/{iban}`

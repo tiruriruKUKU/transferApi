@@ -85,5 +85,5 @@ line. Following options are available:
 
 ## Datastore
 In memory datastore is build with JDK classes. It can be used concurrently by multiple threads.
-Datastore with similar properties can be build with relation database and `select for update`
+Datastore with similar properties can be build with relational database and `select for update`
 statement.
